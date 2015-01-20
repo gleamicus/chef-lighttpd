@@ -50,4 +50,6 @@ default[:lighttpd][:url_redirects] = { }
 
 if node.platform_family?("debian")
   default[:lighttpd][:reload_action] = :restart
+else
+  default[:lighttpd][:reload_action] = :reload
 end
