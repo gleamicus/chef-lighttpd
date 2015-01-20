@@ -32,7 +32,7 @@ define :lighttpd_site, :enable => true do
 			only_if do
 				File.exists?("#{node[:lighttpd][:dir]}/sites-available/#{params[:server_name]}.conf")
 			end
-    	notifies node[:lighttpd][:reload_action], service["lighttpd"], :delayed
+    	notifies node[:lighttpd][:reload_action], "service[lighttpd]", :delayed
 		end
 	else
 		link "#{node[:lighttpd][:dir]}/sites-enabled/#{params[:server_name]}.conf" do
@@ -40,7 +40,7 @@ define :lighttpd_site, :enable => true do
 			only_if do
 				File.symlink?("#{node[:lighttpd][:dir]}/sites-enabled/#{params[:server_name]}.conf")
 			end
-	    notifies node[:lighttpd][:reload_action], service["lighttpd"], :delayed
+	    notifies node[:lighttpd][:reload_action], "service[lighttpd]", :delayed
 		end
 	end
 end

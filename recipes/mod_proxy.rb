@@ -24,5 +24,5 @@ template "/etc/lighttpd/conf-available/10-proxy.conf" do
   owner node[:root_user]
   group node[:root_group]
   mode "0644"
-  notifies node[:lighttpd][:reload_action], service["lighttpd"], :delayed
+  notifies node[:lighttpd][:reload_action], "service[lighttpd]", :delayed
 end

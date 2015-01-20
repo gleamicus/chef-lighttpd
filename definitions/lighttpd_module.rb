@@ -26,6 +26,6 @@ define :lighttpd_module, :enable => true do
       #{module_command} #{params[:name]}
     EOH
     return [0, 2]
-    notifies node[:lighttpd][:reload_action], service["lighttpd"], :delayed
+    notifies node[:lighttpd][:reload_action], "service[lighttpd]", :delayed
   end
 end

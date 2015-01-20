@@ -65,5 +65,5 @@ template "/etc/lighttpd/lighttpd.conf" do
     :url_rewrites => node[:lighttpd][:url_rewrites],
     :url_redirects => node[:lighttpd][:url_redirects]
   )
-  notifies node[:lighttpd][:reload_action], service["lighttpd"], :delayed
+  notifies node[:lighttpd][:reload_action], "service[lighttpd]", :delayed
 end
