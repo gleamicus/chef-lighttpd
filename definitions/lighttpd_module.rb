@@ -27,5 +27,6 @@ define :lighttpd_module, :enable => true do
     EOH
     returns [0, 2]
     notifies node[:lighttpd][:reload_action], "service[lighttpd]", :delayed
+    only_if { Dir.glob("/etc/lighttpd/conf-enabled/*-#{params[:name]}.conf").empty? }
   end
 end
