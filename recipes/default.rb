@@ -21,14 +21,6 @@ package "lighttpd" do
   action :install
 end
 
-cookbook_file "/etc/init.d/lighttpd" do
-  source "lighttpd.init"
-  mode "0755"
-  owner node[:root_user]
-  group node[:root_group]
-  only_if { node.platform?("ubuntu") }
-end
-
 service "lighttpd" do
   # need to support more platforms, someday, when I have the time
   supports value_for_platform(
