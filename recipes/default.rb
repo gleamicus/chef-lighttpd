@@ -21,16 +21,6 @@ package "lighttpd" do
   action :install
 end
 
-service "lighttpd" do
-  # need to support more platforms, someday, when I have the time
-  supports value_for_platform(
-    "debian" => { "4.0" => [ :restart, :reload ], "default" => [ :restart, :reload, :status ] },
-    "ubuntu" => { "default" => [ :restart, :reload, :status ] },
-    "default" => { "default" => [:restart, :reload ] }
-  )
-  action :enable
-end
-
 cookbook_file "/usr/share/lighttpd/include-sites-enabled.pl" do
   source "include-sites-enabled.pl"
   mode "0755"
@@ -66,4 +56,14 @@ template "/etc/lighttpd/lighttpd.conf" do
     :url_redirects => node[:lighttpd][:url_redirects]
   )
   notifies node[:lighttpd][:reload_action], "service[lighttpd]", :delayed
+end
+
+service "lighttpd" do
+  # need to support more platforms, someday, when I have the time
+  supports value_for_platform(
+    "debian" => { "4.0" => [ :restart, :reload ], "default" => [ :restart, :reload, :status ] },
+    "ubuntu" => { "default" => [ :restart, :reload, :status ] },
+    "default" => { "default" => [:restart, :reload ] }
+  )
+  action [:enable, :start]
 end
