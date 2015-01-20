@@ -24,14 +24,15 @@ define :lighttpd_site, :enable => true do
 	if params[:enable]
 		link "#{node[:lighttpd][:dir]}/sites-enabled/#{params[:server_name]}.conf" do
 			to "#{node[:lighttpd][:dir]}/sites-available/#{params[:server_name]}.conf"
-			owner "root"
-			group "root"
+			owner node[:root_user]
+			group node[:root_group]
 			not_if do
 				File.symlink?("#{node[:lighttpd][:dir]}/sites-enabled/#{params[:server_name]}.conf")
 			end
 			only_if do
 				File.exists?("#{node[:lighttpd][:dir]}/sites-available/#{params[:server_name]}.conf")
 			end
+    	notifies node[:lighttpd][:reload_action], service["lighttpd"], :delayed
 		end
 	else
 		link "#{node[:lighttpd][:dir]}/sites-enabled/#{params[:server_name]}.conf" do
@@ -39,6 +40,7 @@ define :lighttpd_site, :enable => true do
 			only_if do
 				File.symlink?("#{node[:lighttpd][:dir]}/sites-enabled/#{params[:server_name]}.conf")
 			end
+	    notifies node[:lighttpd][:reload_action], service["lighttpd"], :delayed
 		end
 	end
 end

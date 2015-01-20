@@ -17,6 +17,9 @@
 # limitations under the License.
 #
 
+default[:lighttpd][:conf_cookbook] = "lighttpd"
+default[:lighttpd][:conf_template] = "lighttpd.conf.erb"
+
 default[:lighttpd][:dir]     = "/etc/lighttpd"
 default[:lighttpd][:log_dir] = "/var/log/lighttpd"
 default[:lighttpd][:user]    = "www-data"
@@ -44,3 +47,7 @@ default[:lighttpd][:debug][:proxy] = "disable"
 default[:lighttpd][:debug][:dump_unknown_headers] = "disable"
 default[:lighttpd][:url_rewrites] = { }
 default[:lighttpd][:url_redirects] = { }
+
+if node.platform_family?("debian")
+  default[:lighttpd][:reload_action] = :restart
+end

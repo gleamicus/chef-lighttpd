@@ -18,17 +18,19 @@
 #
 
 package "lighttpd" do
-	action :install
+  action :install
+end
+
+cookbook_file "/etc/init.d/lighttpd" do
+  source "lighttpd.init"
+  mode "0755"
+  owner node[:root_user]
+  group node[:root_group]
+  only_if { node.platform?("ubuntu") }
 end
 
 service "lighttpd" do
   # need to support more platforms, someday, when I have the time
-case node[:platform]
-  when "debian","ubuntu"
-    service_name "lighttpd"
-    restart_command "/usr/sbin/invoke-rc.d lighttpd restart && sleep 1"
-    reload_command "/usr/sbin/invoke-rc.d lighttpd restart && sleep 1"
-  end
   supports value_for_platform(
     "debian" => { "4.0" => [ :restart, :reload ], "default" => [ :restart, :reload, :status ] },
     "ubuntu" => { "default" => [ :restart, :reload, :status ] },
@@ -39,30 +41,31 @@ end
 
 cookbook_file "/usr/share/lighttpd/include-sites-enabled.pl" do
   source "include-sites-enabled.pl"
-  mode 0755
-  owner "root"
-  group "root"
+  mode "0755"
+  owner node[:root_user]
+  group node[:root_group]
 end
 
 # make sites-available and sites-enabled
 directory "/etc/lighttpd/sites-available" do
   action :create
-  mode 0755
-  owner "root"
-  group "root"
+  mode "0755"
+  owner node[:root_user]
+  group node[:root_group]
 end
 
 directory "/etc/lighttpd/sites-enabled" do
   action :create
-  mode 0755
-  owner "root"
-  group "root"
+  mode "0755"
+  owner node[:root_user]
+  group node[:root_group]
 end
 
 template "/etc/lighttpd/lighttpd.conf" do
-  source "lighttpd.conf.erb"
-  owner "root"
-  group "root"
+  source node[:lighttpd][:conf_template]
+  cookbook node[:lighttpd][:conf_cookbook]
+  owner node[:root_user]
+  group node[:root_group]
   mode "0644"
   variables(
     :extforward_headers => node[:lighttpd][:extforward_headers],
@@ -70,6 +73,5 @@ template "/etc/lighttpd/lighttpd.conf" do
     :url_rewrites => node[:lighttpd][:url_rewrites],
     :url_redirects => node[:lighttpd][:url_redirects]
   )
-  notifies :restart, resources(:service => "lighttpd"), :delayed
+  notifies node[:lighttpd][:reload_action], service["lighttpd"], :delayed
 end
-
