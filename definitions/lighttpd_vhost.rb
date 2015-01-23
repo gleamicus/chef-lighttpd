@@ -18,7 +18,7 @@
 # Adapted from web_app in apache2 recipe
 
 define :lighttpd_vhost, :template => "lighttpd_vhost.conf.erb" do
-  vhost_name = params[:server_name]
+  vhost_name = params[:name]
   enabled = params[:enable]
   include_recipe "lighttpd"
 
@@ -40,7 +40,7 @@ define :lighttpd_vhost, :template => "lighttpd_vhost.conf.erb" do
   end
 
   lighttpd_site "#{vhost_name}.conf" do
-    server_name vhost_name
+    name vhost_name
     enable enabled
   end
 

@@ -22,23 +22,23 @@ define :lighttpd_site, :enable => true do
 	include_recipe "lighttpd"
 
 	if params[:enable]
-		link "#{node[:lighttpd][:dir]}/sites-enabled/#{params[:server_name]}.conf" do
-			to "#{node[:lighttpd][:dir]}/sites-available/#{params[:server_name]}.conf"
+		link "#{node[:lighttpd][:dir]}/sites-enabled/#{params[:name]}.conf" do
+			to "#{node[:lighttpd][:dir]}/sites-available/#{params[:name]}.conf"
 			owner node[:root_user]
 			group node[:root_group]
 			not_if do
-				File.symlink?("#{node[:lighttpd][:dir]}/sites-enabled/#{params[:server_name]}.conf")
+				File.symlink?("#{node[:lighttpd][:dir]}/sites-enabled/#{params[:name]}.conf")
 			end
 			only_if do
-				File.exists?("#{node[:lighttpd][:dir]}/sites-available/#{params[:server_name]}.conf")
+				File.exists?("#{node[:lighttpd][:dir]}/sites-available/#{params[:name]}.conf")
 			end
     	notifies node[:lighttpd][:reload_action], "service[lighttpd]", :delayed
 		end
 	else
-		link "#{node[:lighttpd][:dir]}/sites-enabled/#{params[:server_name]}.conf" do
+		link "#{node[:lighttpd][:dir]}/sites-enabled/#{params[:name]}.conf" do
 			action :delete
 			only_if do
-				File.symlink?("#{node[:lighttpd][:dir]}/sites-enabled/#{params[:server_name]}.conf")
+				File.symlink?("#{node[:lighttpd][:dir]}/sites-enabled/#{params[:name]}.conf")
 			end
 	    notifies node[:lighttpd][:reload_action], "service[lighttpd]", :delayed
 		end
